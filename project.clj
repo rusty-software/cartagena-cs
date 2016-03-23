@@ -12,6 +12,7 @@
                  [org.clojure/core.memoize "0.5.8"]
                  [reagent "0.5.1"]
                  [com.taoensso/sente "1.8.1"]
+                 [com.taoensso/timbre "4.3.1"]
                  [environ "1.0.2"]
                  [http-kit "2.1.19"]
                  [compojure "1.5.0"]
