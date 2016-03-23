@@ -43,8 +43,14 @@
 (defmethod event :default [{:keys [event]}]
   (log/info "Unhandled event: " event))
 
-(defmethod event :cs-test/new-game [{:keys [uid ?data]}]
-  (log/info "new-game called! uid" uid "?data" ?data))
+(defn game-token [n]
+  (let [chars (map char (range 33 127))
+        password (take n (repeatedly #(rand-nth chars)))]
+    (reduce str password)))
+
+(defmethod event :cs-test/new-game [ev-msg]
+  (let [new-game-token (game-token 4)]
+    (log/info "new-game initializing:" new-game-token)))
 
 (defn start-router []
   (log/info "Starting router...")
