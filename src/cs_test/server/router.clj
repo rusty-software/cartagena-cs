@@ -9,13 +9,12 @@
     [ring.util.response :as response]
     [taoensso.sente :as sente]
     [taoensso.sente.server-adapters.http-kit :as http-kit]
-    [taoensso.timbre :as timbre :refer (tracef debugf infof warnf errorf)]
-    ))
+    [taoensso.timbre :as log]))
 
 (declare channel-socket)
 
 (defn start-websocket []
-  (infof "Starting websocket...")
+  (log/info "Starting websocket...")
   (defonce channel-socket
     (sente/make-channel-socket!
       http-kit/sente-web-server-adapter
@@ -42,17 +41,17 @@
 (defmulti event :id)
 
 (defmethod event :default [{:keys [event]}]
-  (infof "Unhandled event: " event))
+  (log/info "Unhandled event: " event))
 
 (defmethod event :cs-test/new-game [{:keys [uid ?data]}]
-  (infof "uid" uid "?data" ?data))
+  (log/info "new-game called! uid" uid "?data" ?data))
 
 (defn start-router []
-  (infof "Starting router...")
+  (log/info "Starting router...")
   (defonce router
     (sente/start-chsk-router! (:ch-recv channel-socket) event)))
 
-(defn broadcast []
+#_(defn broadcast []
   (doseq [uid (:any @(:connected-uids channel-socket))]
     ((:send-fn channel-socket) uid [:snakelake/world @model/world])))
 
