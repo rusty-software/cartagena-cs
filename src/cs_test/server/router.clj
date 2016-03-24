@@ -9,7 +9,8 @@
     [ring.util.response :as response]
     [taoensso.sente :as sente]
     [taoensso.sente.server-adapters.http-kit :as http-kit]
-    [taoensso.timbre :as log]))
+    [taoensso.timbre :as log]
+    [cs-test.server.model :as model]))
 
 (declare channel-socket)
 
@@ -43,14 +44,27 @@
 (defmethod event :default [{:keys [event]}]
   (log/info "Unhandled event: " event))
 
-(defn game-token [n]
-  (let [chars (map char (range 33 127))
-        password (take n (repeatedly #(rand-nth chars)))]
-    (reduce str password)))
+(defmethod event :cs-test/new-game [{:keys [client-id] :as ev-msg}]
+  (let [new-game-token (model/game-token 4)]
+    (log/info "new-game initializing:" new-game-token)
+    (swap! model/app-state assoc new-game-token {:initialized-by client-id})
+    (log/info "current app-state" @model/app-state)))
 
-(defmethod event :cs-test/new-game [ev-msg]
-  (let [new-game-token (game-token 4)]
-    (log/info "new-game initializing:" new-game-token)))
+(defmethod event :cs-test/end-game [{:keys [game-token]}]
+  (log/info "ending game:" game-token)
+  (swap! model/app-state dissoc game-token))
+
+(defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
+  (log/info "new connection:" client-id)
+  (when uid
+    (log/info "new uid:" uid)))
+
+(defmethod event :chsk/uidport-close [{:keys [uid client-id]}]
+  (log/info "close connection:" client-id)
+  (when uid
+    (log/info "dump this uid:" uid)))
+
+(defmethod event :chsk/ws-ping [_])
 
 (defn start-router []
   (log/info "Starting router...")
