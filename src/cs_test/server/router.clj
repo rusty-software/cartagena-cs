@@ -44,15 +44,19 @@
 (defmethod event :default [{:keys [event]}]
   (log/info "Unhandled event: " event))
 
-(defmethod event :cs-test/new-game [{:keys [client-id] :as ev-msg}]
+(defmethod event :cs-test/new-game [{:keys [client-id ?data] :as ev-msg}]
   (let [new-game-token (model/game-token 4)]
-    (log/info "new-game initializing:" new-game-token)
+    (log/info
+      "new-game:" new-game-token
+      "initialized by:" ?data
+      "from client:" client-id)
     (swap! model/app-state assoc new-game-token {:initialized-by client-id})
-    (log/info "current app-state" @model/app-state)))
+    (log/debug "current app-state:" @model/app-state)))
 
 (defmethod event :cs-test/end-game [{:keys [game-token]}]
   (log/info "ending game:" game-token)
-  (swap! model/app-state dissoc game-token))
+  (swap! model/app-state dissoc game-token)
+  (log/debug "current app-state:" @model/app-state))
 
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
   (log/info "new connection:" client-id)

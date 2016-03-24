@@ -1,11 +1,20 @@
 (ns cs-test.view
   (:require
+    [cs-test.communication :as communication]
     [cs-test.model :as model]))
 
 (defn main []
   [:div
    [:h1 "CS Test"]
-   [:button
+   [:hr]
+   [:div
+    {:id "new-game"}
+    [:input
+     {:id "txt-ng-playername"
+      :type "text"
+      :value (:player-name @model/game-state)
+      :on-change #(model/update-player-name! (-> % .-target .-value))}]
+    [:button
      {:id "btn-new-game"
-      :on-click #(model/new-game!)}
-     "New Game"]])
+      :on-click #(communication/new-game)}
+     "New Game"]]])

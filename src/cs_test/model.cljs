@@ -1,6 +1,11 @@
 (ns cs-test.model
   (:require
-    [cs-test.communication :as communication]))
+    [reagent.core :as reagent]))
 
-(defn new-game! []
-  (communication/new-game))
+(defonce game-state (reagent/atom {}))
+
+(defn update-player-name [gs name]
+  (assoc gs :player-name name))
+
+(defn update-player-name! [name]
+  (swap! game-state update-player-name name))

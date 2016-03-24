@@ -2,6 +2,7 @@
   (:require
     [cs-test.auto-init]
     [cs-test.config :as config]
+    [cs-test.model :as model]
     [taoensso.sente :as sente]))
 
 (defn get-chsk-url
@@ -34,4 +35,4 @@
   (println "recv from server:" ?data))
 
 (defn new-game []
-  (chsk-send! [:cs-test/new-game]))
+  (chsk-send! [:cs-test/new-game (:player-name @model/game-state)]))
