@@ -19,7 +19,7 @@
   (defonce channel-socket
     (sente/make-channel-socket!
       http-kit/sente-web-server-adapter
-      {})))
+      {:user-id-fn (fn [req] (:client-id req))})))
 
 (defroutes routes
   (GET "/" req (response/content-type
@@ -39,18 +39,24 @@
                     :access-control-allow-methods [:get :put :post :delete]
                     :access-control-allow-credentials ["true"])))
 
+#_(defn broadcast []
+  (doseq [uid (:any @(:connected-uids channel-socket))]
+    ((:send-fn channel-socket) uid [:snakelake/world @model/world])))
+
 (defmulti event :id)
 
 (defmethod event :default [{:keys [event]}]
   (log/info "Unhandled event: " event))
 
-(defmethod event :cs-test/new-game [{:keys [client-id ?data] :as ev-msg}]
+(defmethod event :cs-test/new-game [{:keys [client-id uid ?data] :as ev-msg}]
   (let [new-game-token (model/game-token 4)]
     (log/info
       "new-game:" new-game-token
       "initialized by:" ?data
-      "from client:" client-id)
+      "from client:" client-id
+      "with uid:" uid)
     (swap! model/app-state assoc new-game-token {:initialized-by client-id})
+    ((:send-fn channel-socket) uid [:cs-test/new-game-initialized new-game-token])
     (log/debug "current app-state:" @model/app-state)))
 
 (defmethod event :cs-test/end-game [{:keys [game-token]}]
@@ -75,9 +81,7 @@
   (defonce router
     (sente/start-chsk-router! (:ch-recv channel-socket) event)))
 
-#_(defn broadcast []
-  (doseq [uid (:any @(:connected-uids channel-socket))]
-    ((:send-fn channel-socket) uid [:snakelake/world @model/world])))
+
 
 (defn init []
   (start-websocket)

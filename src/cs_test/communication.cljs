@@ -32,6 +32,7 @@
     (println "Channel socket state change:" ?data)))
 
 (defmethod event-msg-handler :chsk/recv [{:keys [?data]}]
+  (println "recv")
   (println "recv from server:" ?data))
 
 (defn new-game []
