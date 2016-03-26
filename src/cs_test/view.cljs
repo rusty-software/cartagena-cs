@@ -17,4 +17,8 @@
     [:button
      {:id "btn-new-game"
       :on-click #(communication/new-game)}
-     "New Game"]]])
+     "New Game"]]
+   [:div
+    (when-let [game-token (:game-token @model/game-state)]
+      [:span
+       "Your game token is: " game-token])]])

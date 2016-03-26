@@ -32,8 +32,14 @@
     (println "Channel socket state change:" ?data)))
 
 (defmethod event-msg-handler :chsk/recv [{:keys [?data]}]
-  (println "recv")
+  (when-let [event (first ?data)]
+    (case event
+      :cs-test/new-game-initialized (model/update-game-token! (second ?data))
+      ))
   (println "recv from server:" ?data))
+
+(defonce router
+  (sente/start-client-chsk-router! ch-chsk event-msg-handler))
 
 (defn new-game []
   (chsk-send! [:cs-test/new-game (:player-name @model/game-state)]))
