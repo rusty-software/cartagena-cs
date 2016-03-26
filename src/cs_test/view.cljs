@@ -1,12 +1,13 @@
 (ns cs-test.view
   (:require
     [cs-test.communication :as communication]
-    [cs-test.model :as model]))
+    [cs-test.model :as model]
+    [cljs.pprint :as pprint]))
 
-(defn display-game-token [game-token]
+(defn display-server-state [server-state]
   [:div
    [:span
-    "Your game token is: " game-token]])
+    "Your server state is: " (with-out-str (pprint/pprint server-state))]])
 
 (defn display-join-game []
   [:div
@@ -39,7 +40,12 @@
      {:id "btn-new-game"
       :on-click #(communication/new-game)}
      "New Game"]
-    (let [game-token (:game-token @model/game-state)]
-      (if game-token
-        (display-game-token game-token)
-        (display-join-game)))]])
+    (let [server-state (:server-state @model/game-state)]
+      (if server-state
+        (display-server-state server-state)
+        (display-join-game)))]
+
+   [:hr]
+   [:div
+    [:span
+     "Client game state: " (with-out-str (pprint/pprint @model/game-state))]]])

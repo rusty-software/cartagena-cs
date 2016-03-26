@@ -54,20 +54,23 @@
       "new-game:" new-game-token
       "initialized by:" ?data
       "with uid:" uid)
-    (model/start-game! uid new-game-token)
-    ((:send-fn channel-socket) uid [:cs-test/new-game-initialized new-game-token])
+    (model/start-game! uid new-game-token ?data)
+    ((:send-fn channel-socket) uid [:cs-test/new-game-initialized (get @model/app-state new-game-token)])
     (log/debug "current app-state:" @model/app-state)))
 
 (defmethod event :cs-test/join-game [{:keys [uid ?data]}]
-  (let [{:keys [player-name joining-game-token]} ?data]
-    (log/info
-      "uid:" uid
-      "with player name:" player-name
-      "wants to join game:" joining-game-token)))
+  (let [{:keys [player-name joining-game-token]} ?data
+        game-state (get @model/app-state joining-game-token)]
+    (when game-state
+      (do
+        (model/join-game! uid player-name joining-game-token)
+        #_(let [game-player-uids ()])
+        ))
+    (log/debug "current app-state:" @model/app-state)))
 
 (defmethod event :cs-test/end-game [{:keys [game-token]}]
   (log/info "ending game:" game-token)
-  (swap! model/app-state dissoc game-token)
+  (model/end-game! game-token)
   (log/debug "current app-state:" @model/app-state))
 
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
@@ -86,8 +89,6 @@
   (log/info "Starting router...")
   (defonce router
     (sente/start-chsk-router! (:ch-recv channel-socket) event)))
-
-
 
 (defn init []
   (start-websocket)

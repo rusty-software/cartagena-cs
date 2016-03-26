@@ -34,7 +34,7 @@
 (defmethod event-msg-handler :chsk/recv [{:keys [?data]}]
   (when-let [event (first ?data)]
     (case event
-      :cs-test/new-game-initialized (model/update-game-token! (second ?data))
+      :cs-test/new-game-initialized (model/update-server-state! (second ?data))
       ))
   (println "recv from server:" ?data))
 
