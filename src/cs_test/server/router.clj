@@ -54,7 +54,7 @@
       "new-game:" new-game-token
       "initialized by:" ?data
       "with uid:" uid)
-    (swap! model/app-state assoc new-game-token {:initialized-by uid})
+    (model/start-game! uid new-game-token)
     ((:send-fn channel-socket) uid [:cs-test/new-game-initialized new-game-token])
     (log/debug "current app-state:" @model/app-state)))
 

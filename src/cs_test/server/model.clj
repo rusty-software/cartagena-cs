@@ -8,6 +8,10 @@
         token (take n (repeatedly #(rand-nth chars)))]
     (reduce str token)))
 
+(defn start-game! [uid token]
+  (swap! app-state assoc token {:initialized-by uid
+                                :players [uid]}))
+
 (defn join-game [m uid name token]
   )
 
