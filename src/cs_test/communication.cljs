@@ -43,3 +43,8 @@
 
 (defn new-game []
   (chsk-send! [:cs-test/new-game (:player-name @model/game-state)]))
+
+(defn join-game []
+  (let [{:keys [player-name joining-game-token]} @model/game-state]
+    (chsk-send! [:cs-test/join-game {:player-name player-name
+                                     :joining-game-token joining-game-token}])))

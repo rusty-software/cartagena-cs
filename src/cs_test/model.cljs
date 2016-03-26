@@ -15,3 +15,9 @@
 
 (defn update-game-token! [token]
   (swap! game-state update-game-token token))
+
+(defn update-joining-game-token [gs token]
+  (assoc gs :joining-game-token token))
+
+(defn update-joining-game-token! [token]
+  (swap! game-state update-joining-game-token token))

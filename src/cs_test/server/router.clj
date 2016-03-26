@@ -48,16 +48,22 @@
 (defmethod event :default [{:keys [event]}]
   (log/info "Unhandled event: " event))
 
-(defmethod event :cs-test/new-game [{:keys [client-id uid ?data] :as ev-msg}]
+(defmethod event :cs-test/new-game [{:keys [uid ?data] :as ev-msg}]
   (let [new-game-token (model/game-token 4)]
     (log/info
       "new-game:" new-game-token
       "initialized by:" ?data
-      "from client:" client-id
       "with uid:" uid)
-    (swap! model/app-state assoc new-game-token {:initialized-by client-id})
+    (swap! model/app-state assoc new-game-token {:initialized-by uid})
     ((:send-fn channel-socket) uid [:cs-test/new-game-initialized new-game-token])
     (log/debug "current app-state:" @model/app-state)))
+
+(defmethod event :cs-test/join-game [{:keys [uid ?data]}]
+  (let [{:keys [player-name joining-game-token]} ?data]
+    (log/info
+      "uid:" uid
+      "with player name:" player-name
+      "wants to join game:" joining-game-token)))
 
 (defmethod event :cs-test/end-game [{:keys [game-token]}]
   (log/info "ending game:" game-token)
