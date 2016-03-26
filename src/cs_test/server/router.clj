@@ -43,6 +43,10 @@
   (doseq [uid (:any @(:connected-uids channel-socket))]
     ((:send-fn channel-socket) uid [:snakelake/world @model/world])))
 
+(defn broadcast-game-state [players event-and-payload]
+  (doseq [player players]
+    ((:send-fn channel-socket) (first (keys player)) event-and-payload)))
+
 (defmulti event :id)
 
 (defmethod event :default [{:keys [event]}]
@@ -64,8 +68,8 @@
     (when game-state
       (do
         (model/join-game! uid player-name joining-game-token)
-        #_(let [game-player-uids ()])
-        ))
+        (let [players (get-in @model/app-state [joining-game-token :players])]
+          (broadcast-game-state players [:cs-test/player-joined (get @model/app-state joining-game-token)]))))
     (log/debug "current app-state:" @model/app-state)))
 
 (defmethod event :cs-test/end-game [{:keys [game-token]}]

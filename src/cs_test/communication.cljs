@@ -35,6 +35,7 @@
   (when-let [event (first ?data)]
     (case event
       :cs-test/new-game-initialized (model/update-server-state! (second ?data))
+      :cs-test/player-joined (model/update-server-state! (second ?data))
       ))
   (println "recv from server:" ?data))
 
