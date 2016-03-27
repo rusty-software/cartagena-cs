@@ -4,6 +4,17 @@
     [cartagena-cs.model :as model]
     [cljs.pprint :as pprint]))
 
+(defn to-scale [n]
+  (* 1.65 n))
+
+(def colors {:yellow ["gold" "goldenrod"]
+             :brown ["peru" "saddlebrown"]
+             :orange ["orange" "darkorange"]
+             :green ["mediumseagreen" "seagreen"]
+             :blue ["cornflowerblue" "midnightblue"]
+             :red ["red" "darkred"]
+             :gray ["darkgray" "dimgray"]})
+
 (defn name-input []
   [:div
    [:h4
@@ -35,6 +46,20 @@
     :on-click #(communication/end-game)}
    "End Game"])
 
+(defn color-marker [color]
+  (let [stroke (second (color colors))
+        fill (first (color colors))]
+    [:svg
+     {:height "20px"
+      :width "20px"}
+     [:circle
+      {:cx (to-scale 6)
+       :cy (to-scale 6)
+       :r (to-scale 5)
+       :stroke stroke
+       :stroke-width (to-scale 1)
+       :fill fill}]]))
+
 (defn initializing-table-rows []
   [[:tr
     {:key "token-row"}
@@ -53,7 +78,8 @@
       (for [uid-player (get-in @model/game-state [:server-state :players])
             :let [player (first (vals uid-player))]]
         ^{:key player}
-        [:li (:name player)])]]]
+        [:li (:name player)
+         [color-marker (:color player)]])]]]
    (when (not (:joining-game-token @model/game-state))
      [:tr
       {:key "start-button-row"}
