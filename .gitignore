@@ -11,3 +11,4 @@ pom.xml
 .idea/
 *.iml
 .lein*
+.DS_Store

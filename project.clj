@@ -41,7 +41,7 @@
                                  :figwheel {}
                                  :compiler {:main cartagena-cs.main
                                             :asset-path "js/compiled/out"
-                                            :output-to "resources/public/js/compiled/cs_test.js"
+                                            :output-to "resources/public/js/compiled/cartagena_cs.js"
                                             :output-dir "resources/public/js/compiled/out"
                                             :source-map-timestamp true}}]}}
              :uberjar {:hooks [leiningen.cljsbuild]
@@ -50,7 +50,7 @@
                                    [{:id "min"
                                      :source-paths ["src" "prod"]
                                      :compiler {:main cartagena-cs.main
-                                                :output-to "resources/public/js/compiled/cs_test.js"
+                                                :output-to "resources/public/js/compiled/cartagena_cs.js"
                                                 :optimizations :advanced
                                                 :pretty-print false}}]}}}
 

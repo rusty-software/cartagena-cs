@@ -45,6 +45,9 @@
 (defn new-game []
   (chsk-send! [:cartagena-cs/new-game (:player-name @model/game-state)]))
 
+(defn start-game []
+  (chsk-send! [:cartagena-cs/start-game (get-in @model/game-state [:server-state :token])]))
+
 (defn join-game []
   (let [{:keys [player-name joining-game-token]} @model/game-state]
     (chsk-send! [:cartagena-cs/join-game {:player-name player-name
