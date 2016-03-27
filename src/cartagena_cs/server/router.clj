@@ -1,4 +1,4 @@
-(ns cs-test.server.router
+(ns cartagena-cs.server.router
   (:require
     [compojure.core :refer [defroutes GET POST]]
     [compojure.route :as route]
@@ -10,7 +10,7 @@
     [taoensso.sente :as sente]
     [taoensso.sente.server-adapters.http-kit :as http-kit]
     [taoensso.timbre :as log]
-    [cs-test.server.model :as model]))
+    [cartagena-cs.server.model :as model]))
 
 (declare channel-socket)
 
@@ -52,27 +52,27 @@
 (defmethod event :default [{:keys [event]}]
   (log/info "Unhandled event: " event))
 
-(defmethod event :cs-test/new-game [{:keys [uid ?data] :as ev-msg}]
+(defmethod event :cartagena-cs/new-game [{:keys [uid ?data] :as ev-msg}]
   (let [new-game-token (model/game-token 4)]
     (log/info
       "new-game:" new-game-token
       "initialized by:" ?data
       "with uid:" uid)
     (model/start-game! uid new-game-token ?data)
-    ((:send-fn channel-socket) uid [:cs-test/new-game-initialized (get @model/app-state new-game-token)])
+    ((:send-fn channel-socket) uid [:cartagena-cs/new-game-initialized (get @model/app-state new-game-token)])
     (log/debug "current app-state:" @model/app-state)))
 
-(defmethod event :cs-test/join-game [{:keys [uid ?data]}]
+(defmethod event :cartagena-cs/join-game [{:keys [uid ?data]}]
   (let [{:keys [player-name joining-game-token]} ?data
         game-state (get @model/app-state joining-game-token)]
     (when game-state
       (do
         (model/join-game! uid player-name joining-game-token)
         (let [players (get-in @model/app-state [joining-game-token :players])]
-          (broadcast-game-state players [:cs-test/player-joined (get @model/app-state joining-game-token)]))))
+          (broadcast-game-state players [:cartagena-cs/player-joined (get @model/app-state joining-game-token)]))))
     (log/debug "current app-state:" @model/app-state)))
 
-(defmethod event :cs-test/end-game [{:keys [game-token]}]
+(defmethod event :cartagena-cs/end-game [{:keys [game-token]}]
   (log/info "ending game:" game-token)
   (model/end-game! game-token)
   (log/debug "current app-state:" @model/app-state))

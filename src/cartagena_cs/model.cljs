@@ -1,4 +1,4 @@
-(ns cs-test.model
+(ns cartagena-cs.model
   (:require
     [reagent.core :as reagent]))
 

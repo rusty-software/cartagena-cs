@@ -1,4 +1,4 @@
-(defproject cs-test "0.1.0-SNAPSHOT"
+(defproject cartagena-cs "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -30,16 +30,16 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :main cs-test.server.main
+  :main cartagena-cs.server.main
 
-  :uberjar-name "cs-test-standalone.jar"
+  :uberjar-name "cartagena-cs-standalone.jar"
 
   :profiles {:dev {:env {:dev? "true"}
                    :cljsbuild {:builds
                                [{:id "dev"
                                  :source-paths ["src" "dev"]
                                  :figwheel {}
-                                 :compiler {:main cs-test.main
+                                 :compiler {:main cartagena-cs.main
                                             :asset-path "js/compiled/out"
                                             :output-to "resources/public/js/compiled/cs_test.js"
                                             :output-dir "resources/public/js/compiled/out"
@@ -49,7 +49,7 @@
                        :cljsbuild {:builds
                                    [{:id "min"
                                      :source-paths ["src" "prod"]
-                                     :compiler {:main cs-test.main
+                                     :compiler {:main cartagena-cs.main
                                                 :output-to "resources/public/js/compiled/cs_test.js"
                                                 :optimizations :advanced
                                                 :pretty-print false}}]}}}

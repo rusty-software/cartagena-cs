@@ -1,3 +1,3 @@
-(ns cs-test.config)
+(ns cartagena-cs.config)
 
 (def server "localhost:3000")

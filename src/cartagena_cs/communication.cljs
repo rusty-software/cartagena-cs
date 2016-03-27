@@ -1,8 +1,8 @@
-(ns cs-test.communication
+(ns cartagena-cs.communication
   (:require
-    [cs-test.auto-init]
-    [cs-test.config :as config]
-    [cs-test.model :as model]
+    [cartagena-cs.auto-init]
+    [cartagena-cs.config :as config]
+    [cartagena-cs.model :as model]
     [taoensso.sente :as sente]))
 
 (defn get-chsk-url
@@ -34,8 +34,8 @@
 (defmethod event-msg-handler :chsk/recv [{:keys [?data]}]
   (when-let [event (first ?data)]
     (case event
-      :cs-test/new-game-initialized (model/update-server-state! (second ?data))
-      :cs-test/player-joined (model/update-server-state! (second ?data))
+      :cartagena-cs/new-game-initialized (model/update-server-state! (second ?data))
+      :cartagena-cs/player-joined (model/update-server-state! (second ?data))
       ))
   (println "recv from server:" ?data))
 
@@ -43,9 +43,9 @@
   (sente/start-client-chsk-router! ch-chsk event-msg-handler))
 
 (defn new-game []
-  (chsk-send! [:cs-test/new-game (:player-name @model/game-state)]))
+  (chsk-send! [:cartagena-cs/new-game (:player-name @model/game-state)]))
 
 (defn join-game []
   (let [{:keys [player-name joining-game-token]} @model/game-state]
-    (chsk-send! [:cs-test/join-game {:player-name player-name
+    (chsk-send! [:cartagena-cs/join-game {:player-name player-name
                                      :joining-game-token joining-game-token}])))

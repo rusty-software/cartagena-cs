@@ -1,7 +1,7 @@
-(ns cs-test.main
+(ns cartagena-cs.main
   (:require
-    [cs-test.auto-init]
-    [cs-test.view :as view]
+    [cartagena-cs.auto-init]
+    [cartagena-cs.view :as view]
     [reagent.core :as reagent]))
 
 (reagent/render-component

@@ -1,4 +1,4 @@
-(ns cs-test.server.model)
+(ns cartagena-cs.server.model)
 
 (defonce app-state
   (atom {}))

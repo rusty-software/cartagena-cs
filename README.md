@@ -1,4 +1,4 @@
-# cs-test
+# cartagena-cs
 
 FIXME: Write a one-line description of your library/project.
 

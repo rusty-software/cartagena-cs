@@ -1,7 +1,7 @@
-(ns cs-test.view
+(ns cartagena-cs.view
   (:require
-    [cs-test.communication :as communication]
-    [cs-test.model :as model]
+    [cartagena-cs.communication :as communication]
+    [cartagena-cs.model :as model]
     [cljs.pprint :as pprint]))
 
 (defn display-server-state [server-state]

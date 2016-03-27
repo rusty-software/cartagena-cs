@@ -1,6 +1,6 @@
-(ns cs-test.server.main
+(ns cartagena-cs.server.main
   (:require
-    [cs-test.server.router :as router]
+    [cartagena-cs.server.router :as router]
     [environ.core :as environ]
     [org.httpkit.server :as server]
     [taoensso.timbre :as log])
