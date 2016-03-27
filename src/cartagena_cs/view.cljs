@@ -7,13 +7,13 @@
 (defn to-scale [n]
   (* 1.65 n))
 
-(def colors {:yellow ["gold" "goldenrod"]
-             :brown ["peru" "saddlebrown"]
-             :orange ["orange" "darkorange"]
-             :green ["mediumseagreen" "seagreen"]
-             :blue ["cornflowerblue" "midnightblue"]
-             :red ["red" "darkred"]
-             :gray ["darkgray" "dimgray"]})
+(def {:c1 ["gold" "goldenrod"]
+      :c2 ["peru" "saddlebrown"]
+      :c3 ["orange" "darkorange"]
+      :c4 ["mediumseagreen" "seagreen"]
+      :c5 ["cornflowerblue" "midnightblue"]
+      :c6 ["red" "darkred"]
+      :c7 ["darkgray" "dimgray"]})
 
 (defn name-input []
   [:div

@@ -11,20 +11,21 @@
 (comment
   {"gk12" {:token "gk12"
            :initialized-by "uid-123"
-           :players [{"uid-123" {:name "rusty" :color :brown}}
-                     {"uid-456" {:name "tanya" :color :orange}}]}})
+           :players [{"uid-123" {:name "rusty" :color :c1}}
+                     {"uid-456" {:name "tanya" :color :c2}}]}})
 
-(comment {:yellow ["gold" "goldenrod"]
-          :brown ["peru" "saddlebrown"]
-          :orange ["orange" "darkorange"]
-          :green ["mediumseagreen" "seagreen"]
-          :blue ["cornflowerblue" "midnightblue"]
-          :red ["red" "darkred"]
-          :gray ["darkgray" "dimgray"]})
+(comment {:c1 ["gold" "goldenrod"]
+          :c2 ["peru" "saddlebrown"]
+          :c3 ["orange" "darkorange"]
+          :c4 ["mediumseagreen" "seagreen"]
+          :c5 ["cornflowerblue" "midnightblue"]
+          :c6 ["red" "darkred"]
+          :c7 ["darkgray" "dimgray"]})
+
+(def colors [:c1 :c2 :c3 :c4 :c5 :c6 :c7])
 
 (defn initialize-game [app-state uid token name]
-  (let [colors [:yellow :brown :orange :green :blue :red :gray]
-        color (rand-nth colors)
+  (let [color (rand-nth colors)
         remaining-colors (remove #{color} colors)]
     (assoc app-state token {:token token
                             :initialized-by uid
