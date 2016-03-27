@@ -36,6 +36,7 @@
     (case event
       :cartagena-cs/new-game-initialized (model/update-server-state! (second ?data))
       :cartagena-cs/player-joined (model/update-server-state! (second ?data))
+      :cartagena-cs/game-started (model/update-server-state! (second ?data))
       ))
   (println "recv from server:" ?data))
 
@@ -48,7 +49,11 @@
 (defn start-game []
   (chsk-send! [:cartagena-cs/start-game (get-in @model/game-state [:server-state :token])]))
 
+(defn end-game []
+  (chsk-send! [:cartagena-cs/end-game (get-in @model/game-state [:server-state :token])]))
+
 (defn join-game []
   (let [{:keys [player-name joining-game-token]} @model/game-state]
     (chsk-send! [:cartagena-cs/join-game {:player-name player-name
                                      :joining-game-token joining-game-token}])))
+

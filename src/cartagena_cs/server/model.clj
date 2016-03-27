@@ -14,7 +14,7 @@
            :players [{"uid-123" {:name "rusty"}}
                      {"uid-456" {:name "tanya"}}]}})
 
-(defn start-game! [uid token name]
+(defn initialize-game! [uid token name]
   (swap! app-state assoc token {:token token
                                 :initialized-by uid
                                 :players [{uid {:name name}}]}))
@@ -29,3 +29,6 @@
 
 (defn join-game! [uid name token]
   (swap! app-state join-game uid name token))
+
+(defn start-game! [token]
+  (swap! app-state assoc-in [token :game-on?] true))

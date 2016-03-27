@@ -4,26 +4,6 @@
     [cartagena-cs.model :as model]
     [cljs.pprint :as pprint]))
 
-(defn display-server-state [server-state]
-  [:div
-   [:span
-    "Your server state is: " (with-out-str (pprint/pprint server-state))]])
-
-(defn display-join-game []
-  [:div
-   [:hr]
-   [:text "Enter game code:"]
-   [:input
-    {:id "txt-game-token"
-     :type "text"
-     :value (:joining-game-token @model/game-state)
-     :on-change #(model/update-joining-game-token! (-> % .-target .-value))}]
-   [:button
-    {:id "btn-join-game"
-     :class "button brown"
-     :on-click #(communication/join-game)}
-    "Join Game"]])
-
 (defn name-input []
   [:div
    [:h4
@@ -48,6 +28,13 @@
     :on-click #(communication/start-game)}
    "Start Game"])
 
+(defn end-game-button []
+  [:button
+   {:id "btn-end-game"
+    :class "button yellow"
+    :on-click #(communication/end-game)}
+   "End Game"])
+
 (defn initializing-table-rows []
   [[:tr
     {:key "token-row"}
@@ -67,11 +54,12 @@
             :let [player (first (vals uid-player))]]
         ^{:key player}
         [:li (:name player)])]]]
-   [:tr
-    {:key "start-button-row"}
-    [:td
-     {:style {:text-align "center"}}
-     [start-game-button]]]])
+   (when (not (:joining-game-token @model/game-state))
+     [:tr
+      {:key "start-button-row"}
+      [:td
+       {:style {:text-align "center"}}
+       [start-game-button]]])])
 
 (defn start-a-game []
   [:div
@@ -121,37 +109,18 @@
        {:id "btn-join-game"
         :class "button brown"
         :on-click #(communication/join-game)}
-       "Join Game"]]]
-    ]])
+       "Join Game"]]]]])
 
 (defn main []
   [:center
    [:div
     [:h1 "Cartagena Client>Server"]
-    (when (not (:game-on? @model/game-state))
+    (when (not (get-in @model/game-state [:server-state :game-on?]))
       [:div
        [name-input]
        [start-a-game]
        (when (not (:server-state @model/game-state))
          [join-a-game])])
-    #_[:div
-     {:id "new-game"}
-     [:text "Name, please:"]
-     [:input
-      {:id "txt-playername"
-       :type "text"
-       :value (:player-name @model/game-state)
-       :on-change #(model/update-player-name! (-> % .-target .-value))}]
-     [:hr]
-     [:button
-      {:id "btn-new-game"
-       :on-click #(communication/new-game)}
-      "New Game"]
-     (let [server-state (:server-state @model/game-state)]
-       (if server-state
-         (display-server-state server-state)
-         (display-join-game)))]
-
     [:hr]
     [:div
      [:span

@@ -58,7 +58,7 @@
       "new-game:" new-game-token
       "initialized by:" ?data
       "with uid:" uid)
-    (model/start-game! uid new-game-token ?data)
+    (model/initialize-game! uid new-game-token ?data)
     ((:send-fn channel-socket) uid [:cartagena-cs/new-game-initialized (get @model/app-state new-game-token)])
     (log/debug "current app-state:" @model/app-state)))
 
@@ -72,9 +72,17 @@
           (broadcast-game-state players [:cartagena-cs/player-joined (get @model/app-state joining-game-token)]))))
     (log/debug "current app-state:" @model/app-state)))
 
-(defmethod event :cartagena-cs/end-game [{:keys [game-token]}]
-  (log/info "ending game:" game-token)
-  (model/end-game! game-token)
+(defmethod event :cartagena-cs/start-game [{:keys [?data]}]
+  (let [game-state (get @model/app-state ?data)]
+    (when game-state
+      (do
+        (model/start-game! ?data)
+        (let [players (get-in @model/app-state [?data :players])]
+          (broadcast-game-state players [:cartagena-cs/game-started (get @model/app-state ?data)]))))))
+
+(defmethod event :cartagena-cs/end-game [{:keys [token]}]
+  (log/info "ending game:" token)
+  (model/end-game! token)
   (log/debug "current app-state:" @model/app-state))
 
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
