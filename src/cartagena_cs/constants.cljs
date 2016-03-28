@@ -1,7 +1,7 @@
 (ns cartagena-cs.constants)
 
 (def colors {:c1 ["gold" "goldenrod"]
-             :c2 ["peru" "saddlebrown"]
+             :c2 ["mediumorchid" "darkorchid"]
              :c3 ["orange" "darkorange"]
              :c4 ["mediumseagreen" "seagreen"]
              :c5 ["cornflowerblue" "midnightblue"]
