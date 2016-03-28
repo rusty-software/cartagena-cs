@@ -1,19 +1,12 @@
 (ns cartagena-cs.view
   (:require
     [cartagena-cs.communication :as communication]
+    [cartagena-cs.constants :as constants]
     [cartagena-cs.model :as model]
     [cljs.pprint :as pprint]))
 
 (defn to-scale [n]
   (* 1.65 n))
-
-(def {:c1 ["gold" "goldenrod"]
-      :c2 ["peru" "saddlebrown"]
-      :c3 ["orange" "darkorange"]
-      :c4 ["mediumseagreen" "seagreen"]
-      :c5 ["cornflowerblue" "midnightblue"]
-      :c6 ["red" "darkred"]
-      :c7 ["darkgray" "dimgray"]})
 
 (defn name-input []
   [:div
@@ -47,8 +40,8 @@
    "End Game"])
 
 (defn color-marker [color]
-  (let [stroke (second (color colors))
-        fill (first (color colors))]
+  (let [stroke (second (color constants/colors))
+        fill (first (color constants/colors))]
     [:svg
      {:height "20px"
       :width "20px"}
@@ -137,16 +130,62 @@
         :on-click #(communication/join-game)}
        "Join Game"]]]]])
 
+(defn static-board []
+  [;; jail
+   [:rect
+    {:x 0
+     :y 0
+     :width (to-scale 50)
+     :height (to-scale 90)
+     :stroke "black"
+     :fill "darkgray"}]
+   [:g
+    {:dangerouslySetInnerHTML {:__html (str "<image xlink:href=\"img/jail.png\" x=0 y=0 width=\"" (to-scale 30) "\" height=\"" (to-scale 30) "\" />")}}]
+   ;; ship
+   [:rect
+    {:x (to-scale 410)
+     :y (to-scale 240)
+     :width (to-scale 80)
+     :height (to-scale 60)
+     :stroke "black"
+     :fill "sienna"}]
+   [:g
+    {:dangerouslySetInnerHTML {:__html (str "<image xlink:href=\"img/ship.png\" x=\"" (to-scale 410) "\" y=\"" (to-scale 240) "\" width=\"" (to-scale 30) "\" height=\"" (to-scale 30) "\" />")}}]
+   ])
+
+#_(defn normal-spaces []
+  (apply concat
+         (for [i (range 1 37)]
+           (when-let [space-data (get-in @app-state [:board i])]
+             (let [position (get piece-positions i)
+                   x (:x position)
+                   y (:y position)
+                   space (normal-space x y)
+                   image (space-image x y (:icon space-data))
+                   pirates (circles-for i x y (:pirates space-data))]
+               (conj [space image] pirates))))))
+
+(defn game-area []
+  [:div
+   (-> [:svg
+        {:view-box (str "0 0 " (to-scale 501) " " (to-scale 301))
+         :width (to-scale 501)
+         :height (to-scale 301)}]
+       (into (static-board)))
+   ])
+
 (defn main []
   [:center
    [:div
     [:h1 "Cartagena Client>Server"]
-    (when (not (get-in @model/game-state [:server-state :game-on?]))
+    (if (get-in @model/game-state [:server-state :game-on?])
+      [game-area]
       [:div
        [name-input]
        [start-a-game]
        (when (not (:server-state @model/game-state))
          [join-a-game])])
+
     [:hr]
     [:div
      [:span
