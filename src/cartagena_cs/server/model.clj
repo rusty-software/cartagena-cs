@@ -11,8 +11,8 @@
 (comment
   {"gk12" {:token "gk12"
            :initialized-by "uid-123"
-           :players [{"uid-123" {:name "rusty" :color :c1}}
-                     {"uid-456" {:name "tanya" :color :c2}}]}})
+           :players [{:uid "uid-123" :name "tanya" :color :c1}
+                     {:uid "uid-456" :name "rusty" :color :c2}]}})
 
 (comment {:c1 ["gold" "goldenrod"]
           :c2 ["mediumorchid" "darkorchid"]
@@ -30,8 +30,9 @@
     (assoc app-state token {:token token
                             :initialized-by uid
                             :remaining-colors remaining-colors
-                            :players [{uid {:name name
-                                            :color color}}]})))
+                            :players [{:uid uid
+                                       :name name
+                                       :color color}]})))
 
 (defn initialize-game! [uid token name]
   (swap! app-state initialize-game uid token name))
@@ -45,8 +46,9 @@
         colors (:remaining-colors game-state)
         color (rand-nth colors)
         remaining-colors (remove #{color} colors)
-        new-players (conj players {uid {:name name
-                                        :color color}})
+        new-players (conj players {:uid uid
+                                   :name name
+                                   :color color})
         game-state (assoc game-state :players new-players
                                      :remaining-colors remaining-colors)]
     (assoc app-state token game-state)))
@@ -56,7 +58,7 @@
 
 (defn start-game [app-state token]
   (let [game-state (get app-state token)
-        initialization (game/initialize-game (:players game-state))]))
+        initialized-game (game/initialize-game (:players game-state))]))
 
 (defn start-game! [token]
   (swap! app-state assoc-in [token :game-on?] true))

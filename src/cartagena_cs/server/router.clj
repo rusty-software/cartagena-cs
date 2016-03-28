@@ -46,7 +46,7 @@
 
 (defn broadcast-game-state [players event-and-payload]
   (doseq [player players]
-    ((:send-fn channel-socket) (first (keys player)) event-and-payload)))
+    ((:send-fn channel-socket) (:uid player) event-and-payload)))
 
 (defmulti event :id)
 

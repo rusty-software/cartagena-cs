@@ -68,8 +68,7 @@
      "Current players:"
      [:br]
      [:ul
-      (for [uid-player (get-in @model/game-state [:server-state :players])
-            :let [player (first (vals uid-player))]]
+      (for [player (get-in @model/game-state [:server-state :players])]
         ^{:key player}
         [:li (:name player)
          [color-marker (:color player)]])]]]
