@@ -3,10 +3,8 @@
 (defonce app-state
   (atom {}))
 
-(defn game-token [n]
-  (let [chars (map char (range 65 127))
-        token (take n (repeatedly #(rand-nth chars)))]
-    (reduce str token)))
+(defn game-token []
+  (Integer/toString (rand-int (Math/pow 36 6)) 36))
 
 (comment
   {"gk12" {:token "gk12"
@@ -15,7 +13,7 @@
                      {"uid-456" {:name "tanya" :color :c2}}]}})
 
 (comment {:c1 ["gold" "goldenrod"]
-          :c2 ["peru" "saddlebrown"]
+          :c2 ["mediumorchid" "darkorchid"]
           :c3 ["orange" "darkorange"]
           :c4 ["mediumseagreen" "seagreen"]
           :c5 ["cornflowerblue" "midnightblue"]

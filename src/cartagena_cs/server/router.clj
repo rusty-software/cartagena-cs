@@ -33,7 +33,8 @@
 
 (def handler
   (-> #'routes
-    (cond-> (environ/env :dev?) (reload/wrap-reload))
+      (reload/wrap-reload)
+#_    (cond-> (environ/env :dev?) (reload/wrap-reload))
     (defaults/wrap-defaults (assoc-in defaults/site-defaults [:security :anti-forgery] false))
     (cors/wrap-cors :access-control-allow-origin [#".*"]
                     :access-control-allow-methods [:get :put :post :delete]
@@ -53,7 +54,7 @@
   (log/info "Unhandled event: " event))
 
 (defmethod event :cartagena-cs/new-game [{:keys [uid ?data] :as ev-msg}]
-  (let [new-game-token (model/game-token 4)]
+  (let [new-game-token (model/game-token)]
     (log/info
       "new-game:" new-game-token
       "initialized by:" ?data
