@@ -18,7 +18,8 @@
                  [compojure "1.5.0"]
                  [ring "1.4.0"]
                  [ring/ring-defaults "0.2.0"]
-                 [ring-cors "0.1.7"]]
+                 [ring-cors "0.1.7"]
+                 [prismatic/schema "1.1.0"]]
 
   :plugins [[lein-figwheel "0.5.0-6"]
             [lein-cljsbuild "1.1.3"]

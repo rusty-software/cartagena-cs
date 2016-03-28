@@ -56,7 +56,12 @@
      :draw-pile (vec (drop n draw-pile))
      :discard-pile discard-pile}))
 
-#_(defn new-game
+(defn initialize-player
+  "Initializes a player data structure"
+  [{:keys [name color]}]
+  {:name name :color color :cards []})
+
+(defn initialize-game
   "Initializes a new game by creating a board, setting up players with 6 cards and pirates in jail, replacing the draw pile, setting the player order and current player.  Returns a map of the game state."
   [players]
   (let [board (initialize-board)

@@ -1,4 +1,5 @@
-(ns cartagena-cs.server.model)
+(ns cartagena-cs.server.model
+  (:require [cartagena-cs.server.game :as game]))
 
 (defonce app-state
   (atom {}))
@@ -6,6 +7,7 @@
 (defn game-token []
   (Integer/toString (rand-int (Math/pow 36 6)) 36))
 
+;; TODO: promote uid to keyword and string value, promote members of embedded map to first class of player
 (comment
   {"gk12" {:token "gk12"
            :initialized-by "uid-123"
@@ -51,6 +53,10 @@
 
 (defn join-game! [uid name token]
   (swap! app-state join-game uid name token))
+
+(defn start-game [app-state token]
+  (let [game-state (get app-state token)
+        initialization (game/initialize-game (:players game-state))]))
 
 (defn start-game! [token]
   (swap! app-state assoc-in [token :game-on?] true))
