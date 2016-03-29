@@ -170,23 +170,33 @@
    {:dangerouslySetInnerHTML
     {:__html (str "<image xlink:href=\"" (icon constants/icon-images) "\" x=\"" (to-scale x) "\" y=\"" (to-scale y) "\" width=\"" (to-scale 30) "\" height=\"" (to-scale 30) "\" />")}}])
 
+(defn pirate-click [color from-space-index]
+  (println "pirate-click for:" color from-space-index)
+  #_(when (= color (:color (active-player @app-state)))
+      (let [player (active-player @app-state)
+            board (:board @app-state)
+            from-space (get board from-space-index)
+            discard-pile (:discard-pile @app-state)]
+        (if-let [selected-card (:selected-card @app-state)]
+          (play-card! player selected-card from-space board discard-pile)
+          (move-back! player from-space board (:draw-pile @app-state) discard-pile)))))
+
 (defn circles-for [space-index x y colors]
-  (for [color-index (range (count colors))]
-    (let [color (get colors color-index)
+  (for [color-index (range (count colors))
+        :let [color (get colors color-index)
           stroke (second (color constants/colors))
           fill (first (color constants/colors))
           cx (to-scale (+ 35 x))
-          cy (to-scale (+ y 5 (* 10 color-index)))]
-      ^{:key color-index}
-      [:circle
+          cy (to-scale (+ y 5 (* 10 color-index)))]]
+    ^{:key color-index}
+    [:circle
        {:cx cx
         :cy cy
         :r (to-scale 4)
         :stroke stroke
         :stroke-width (to-scale 1)
         :fill fill
-        #_#_:on-click (fn circle-click [e]
-                    (pirate-click color space-index))}])))
+        :on-click #(pirate-click color space-index)}]))
 
 (defn normal-spaces []
   (apply concat
@@ -200,28 +210,35 @@
                    pirates (circles-for i x y (:pirates space-data))]
                (conj [space image] pirates))))))
 
-(defn jail []
-  (when-let [jail (get-in @model/game-state [:server-state :board 0])]
+
+
+(defn special-space [space-index x-base y-base]
+  (when-let [special-space (get-in @model/game-state [:server-state :board space-index])]
     (apply concat
-      (let [pirate-frequencies (frequencies (:pirates jail))
+      (let [pirate-frequencies (frequencies (:pirates special-space))
             pirate-colors (vec (keys pirate-frequencies))]
-        (for [player-index (range (count pirate-frequencies))]
-          (let [pirate-color (get pirate-colors player-index)
-                pirate-count (pirate-color pirate-frequencies)
-                stroke (second (pirate-color constants/colors))
-                fill (first (pirate-color constants/colors))
-                x (to-scale (+ 5 (* 10 player-index)))]
-            (for [pirate-index (range pirate-count)]
-              (let [y (to-scale (+ 35 (* 10 pirate-index)))]
-                [:circle
+        (for [player-index (range (count pirate-frequencies))
+              :let [pirate-color (get pirate-colors player-index)
+                    pirate-count (pirate-color pirate-frequencies)
+                    stroke (second (pirate-color constants/colors))
+                    fill (first (pirate-color constants/colors))
+                    x (to-scale (+ x-base (* 10 player-index)))]]
+          (for [pirate-index (range pirate-count)
+                :let [y (to-scale (+ y-base (* 10 pirate-index)))]]
+              [:circle
                  {:cx x
                   :cy y
                   :r (to-scale 4)
                   :stroke stroke
                   :stroke-width (to-scale 1)
                   :fill fill
-                  #_#_:on-click (fn jail-click [e]
-                                  (pirate-click pirate-color 0))}]))))))))
+                  :on-click #(pirate-click pirate-color space-index)}]))))))
+
+(defn jail []
+  (special-space 0 5 35))
+
+(defn ship []
+  (special-space 37 445 245))
 
 (defn game-area []
   [:div
@@ -231,7 +248,8 @@
          :height (to-scale 301)}]
        (into (static-board))
        (into (normal-spaces))
-       (into (jail)))
+       (into (jail))
+       (into (ship)))
    ])
 
 (defn main []
