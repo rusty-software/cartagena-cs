@@ -170,8 +170,23 @@
    {:dangerouslySetInnerHTML
     {:__html (str "<image xlink:href=\"" (icon constants/icon-images) "\" x=\"" (to-scale x) "\" y=\"" (to-scale y) "\" width=\"" (to-scale 30) "\" height=\"" (to-scale 30) "\" />")}}])
 
+(defn player [name]
+  (let [players (get-in @model/game-state [:server-state :players])]
+    (first (filter #(= name (:name %)) players))))
+
+(defn current-player []
+  (player (get-in @model/game-state [:server-state :current-player])))
+
+(defn my-turn? []
+  (= (:player-name @model/game-state) (:name (current-player))))
+
+(defn clicked-my-pirate? [color]
+  (= color (:color (player (:player-name @model/game-state)))))
+
 (defn pirate-click [color from-space-index]
-  (println "pirate-click for:" color from-space-index)
+  (when (and (my-turn?)
+             (clicked-my-pirate? color))
+    (println "proceeding with the click"))
   #_(when (= color (:color (active-player @app-state)))
       (let [player (active-player @app-state)
             board (:board @app-state)
