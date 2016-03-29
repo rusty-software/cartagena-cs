@@ -137,7 +137,8 @@
      :width (to-scale 50)
      :height (to-scale 90)
      :stroke "black"
-     :fill "darkgray"}]
+     :fill "darkgray"
+     :fill-opacity 0.5}]
    [:g
     {:dangerouslySetInnerHTML {:__html (str "<image xlink:href=\"img/jail.png\" x=0 y=0 width=\"" (to-scale 30) "\" height=\"" (to-scale 30) "\" />")}}]
    ;; ship
@@ -147,7 +148,8 @@
      :width (to-scale 80)
      :height (to-scale 60)
      :stroke "black"
-     :fill "sienna"}]
+     :fill "sienna"
+     :fill-opacity 0.5}]
    [:g
     {:dangerouslySetInnerHTML {:__html (str "<image xlink:href=\"img/ship.png\" x=\"" (to-scale 410) "\" y=\"" (to-scale 240) "\" width=\"" (to-scale 30) "\" height=\"" (to-scale 30) "\" />")}}]
    ])
@@ -160,7 +162,8 @@
     :height (to-scale 30)
     :stroke "black"
     :stroke-width "0.5"
-    :fill "lightgray"}])
+    :fill "lightgray"
+    :fill-opacity 0.5}])
 
 (defn space-image [x y icon]
   [:g
