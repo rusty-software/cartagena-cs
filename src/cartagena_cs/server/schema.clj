@@ -6,5 +6,3 @@
    :name s/Str
    :color s/Keyword
    :cards [s/Keyword]})
-
-

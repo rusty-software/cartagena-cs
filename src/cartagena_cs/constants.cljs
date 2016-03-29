@@ -8,6 +8,15 @@
              :c6 ["red" "darkred"]
              :c7 ["darkgray" "dimgray"]})
 
+(def icon-images {:jail "img/jail.png"
+                  :ship "img/ship.png"
+                  :bottle "img/bottle.png"
+                  :gun "img/gun.jpg"
+                  :hat "img/hat.png"
+                  :key "img/key.png"
+                  :knife "img/knife.png"
+                  :skull "img/skull.png"})
+
 (def piece-positions
   [
    ;; jail

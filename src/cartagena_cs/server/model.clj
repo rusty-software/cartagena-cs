@@ -58,7 +58,8 @@
 
 (defn start-game [app-state token]
   (let [game-state (get app-state token)
-        initialized-game (game/initialize-game (:players game-state))]))
+        initialized-game (game/initialize-game (:players game-state))]
+    (assoc app-state token (merge game-state initialized-game {:game-on? true}))))
 
 (defn start-game! [token]
-  (swap! app-state assoc-in [token :game-on?] true))
+  (swap! app-state start-game token))

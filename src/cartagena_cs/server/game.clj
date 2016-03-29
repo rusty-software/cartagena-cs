@@ -1,4 +1,7 @@
-(ns cartagena-cs.server.game)
+(ns cartagena-cs.server.game
+  (:require
+    [schema.core :as s]
+    [cartagena-cs.server.schema :as schema]))
 
 (def board-piece1 [:bottle :gun :hat :skull :knife :key])
 (def board-piece2 [:knife :bottle :key :gun :hat :skull])
@@ -56,22 +59,17 @@
      :draw-pile (vec (drop n draw-pile))
      :discard-pile discard-pile}))
 
-(defn initialize-player
-  "Initializes a player data structure"
-  [{:keys [name color]}]
-  {:name name :color color :cards []})
-
-(defn initialize-game
+(s/defn initialize-game
   "Initializes a new game by creating a board, setting up players with 6 cards and pirates in jail, replacing the draw pile, setting the player order and current player.  Returns a map of the game state."
-  [players]
+  [players :- [schema/Player]]
   (let [board (initialize-board)
-        players-draw-pile (loop [ps (vec (map initialize-player players))
+        players-draw-pile (loop [no-card-players (vec (map #(assoc % :cards []) players))
                                  cards (initialize-cards)
-                                 acc []]
-                            (if (empty? ps)
-                              acc
-                              (let [player-draw-pile (draw-cards 6 (first ps) cards [])]
-                                (recur (rest ps) (:draw-pile player-draw-pile) (conj acc player-draw-pile)))))
+                                 players-with-cards []]
+                            (if (empty? no-card-players)
+                              players-with-cards
+                              (let [player-draw-pile (draw-cards 6 (first no-card-players) cards [])]
+                                (recur (rest no-card-players) (:draw-pile player-draw-pile) (conj players-with-cards player-draw-pile)))))
         init-players (vec (map :player players-draw-pile))
         draw-pile (:draw-pile (last players-draw-pile))
         pirates-in-jail (vec (flatten (map #(repeat 6 %) (map :color players))))
