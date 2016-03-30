@@ -315,9 +315,10 @@
                   {:src (card constants/icon-images)
                    :width (to-scale 30)
                    :height (to-scale 30)
-                   #_#_:on-click #(select-card! card)}]
+                   :on-click #(model/select-card! card)}]
                  [:center [:figcaption num]]]])]]
        [:tr
+        {:style {:height (to-scale 50)}}
         [:td {:class "bold"} "Selected Card"]
         [:td
          [:span {:style {:float "left"}}
@@ -326,7 +327,12 @@
              {:src (selected-card constants/icon-images)
               :width (to-scale 30)
               :height (to-scale 30)
-              #_#_:on-click #(unselect-card!)}])]]]
+              :on-click #(model/unselect-card!)}])]]]
+       [:tr
+        [:td {:class "bold"
+              :col-span 2
+              :style {:text-align "center"}}
+         "On your turn..."]]
        [:tr
         [:td {:col-span 2}
          "To move forward, click a card, then click the target pirate.  To undo card selection, click the selected card."]]

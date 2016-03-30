@@ -12,3 +12,9 @@
 
 (defn update-joining-game-token! [token]
   (swap! game-state assoc :joining-game-token token))
+
+(defn select-card! [card]
+  (swap! game-state assoc :selected-card card))
+
+(defn unselect-card! []
+  (swap! game-state dissoc :selected-card))
