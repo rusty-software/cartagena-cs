@@ -87,17 +87,23 @@ th {
 	font-weight: bold;
 	text-transform: uppercase;
 	padding: 6px 10px 6px 10px;
+    word-wrap: break-word;
 }
 
 td {
 	padding: 6px 10px 6px 10px;
+    word-wrap: break-word;
+}
+
+td.bold {
+    font-weight: bold;
 }
 
 /**
  * Buttons
  * ----------------------------------------------------------------------------
  */
-.button.yellow, .button.brown, .button.beige, .button.blue, .button.orange {
+.button.yellow, .button.brown {
 	font-family: "IM Fell English SC", Helvetica, sans-serif;
     font-weight: 700;
     font-size: .875em;
@@ -135,8 +141,21 @@ td {
     background-color: #EFB44F;
 }
 
-.leading {
+/**
+ * Miscellany
+ * ----------------------------------------------------------------------------
+ */
+ .leading {
 	font-size: 20px;
 	font-weight: bold;
 	margin: 25px 0;
+}
+
+figure {
+    display: block;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 20px;
+    margin-right: 20px;
+
 }

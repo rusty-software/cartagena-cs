@@ -39,18 +39,18 @@
     :on-click #(communication/end-game)}
    "End Game"])
 
-(defn color-marker [color]
+(defn color-marker [color size loc r w]
   (let [stroke (second (color constants/colors))
         fill (first (color constants/colors))]
     [:svg
-     {:height "20px"
-      :width "20px"}
+     {:height (to-scale size)
+      :width (to-scale size)}
      [:circle
-      {:cx (to-scale 6)
-       :cy (to-scale 6)
-       :r (to-scale 5)
+      {:cx (to-scale loc)
+       :cy (to-scale loc)
+       :r (to-scale r)
        :stroke stroke
-       :stroke-width (to-scale 1)
+       :stroke-width (to-scale w)
        :fill fill}]]))
 
 (defn initializing-table-rows []
@@ -71,7 +71,7 @@
       (for [player (get-in @model/game-state [:server-state :players])]
         ^{:key player}
         [:li (:name player)
-         [color-marker (:color player)]])]]]
+         [color-marker (:color player) 12 6 5 1]])]]]
    (when (not (:joining-game-token @model/game-state))
      [:tr
       {:key "start-button-row"}
@@ -186,7 +186,12 @@
 (defn pirate-click [color from-space-index]
   (when (and (my-turn?)
              (clicked-my-pirate? color))
-    (println "proceeding with the click"))
+    (let [board (get-in @model/game-state [:server-state :board])
+          from-space (get board from-space-index)
+          discard-pile (get-in @model/game-state [:server-state :discard-pile])]
+      (if-let [selected-card (:selected-card @model/game-state)]
+        (println "playing a card")
+        (println "moving back"))))
   #_(when (= color (:color (active-player @app-state)))
       (let [player (active-player @app-state)
             board (:board @app-state)
@@ -257,6 +262,9 @@
 
 (defn game-area []
   [:div
+   {:style {:display "inline-block"
+            :vertical-align "top"
+            :margin "5px 5px 5px 5px"}}
    (-> [:svg
         {:view-box (str "0 0 " (to-scale 501) " " (to-scale 301))
          :width (to-scale 501)
@@ -267,12 +275,74 @@
        (into (ship)))
    ])
 
+(defn player-area []
+  (let [{:keys [cards color] player-name :name} (player (:player-name @model/game-state))
+        card-groups (frequencies cards)]
+    [:div
+     {:style {:display "inline-block"
+              :vertical-align "top"
+              :margin "5px 5px 5px 5px"}}
+     [:table
+      {:style {:width "540px"}}
+      (when (my-turn?)
+        [:thead
+         [:tr
+          [:th {:col-span 2
+                :style {:text-align "center"}}
+           "It's your turn!"]]
+         [:tr
+          [:td {:class "bold"} "Actions"]
+          [:td (get-in @model/game-state [:server-state :actions-remaining])
+           [:button
+            {:class "button brown"
+             :style {:margin "0 0 0 20px"}
+             #_#_:on-click #(update-active-player! @app-state)} "Pass"]]]])
+      [:tbody
+       [:tr
+        [:td {:class "bold"} "Name"]
+        [:td player-name]]
+       [:tr
+        [:td {:class "bold"} "Color"]
+        [:td
+         [color-marker color 20 10 7 2]]]
+       [:tr
+        [:td {:class "bold"} "Cards"]
+        [:td (for [[card num] card-groups]
+               ^{:key card}
+               [:span {:style {:float "left"}}
+                [:figure
+                 [:img
+                  {:src (card constants/icon-images)
+                   :width (to-scale 30)
+                   :height (to-scale 30)
+                   #_#_:on-click #(select-card! card)}]
+                 [:center [:figcaption num]]]])]]
+       [:tr
+        [:td {:class "bold"} "Selected Card"]
+        [:td
+         [:span {:style {:float "left"}}
+          (when-let [selected-card (:selected-card @model/game-state)]
+            [:img
+             {:src (selected-card constants/icon-images)
+              :width (to-scale 30)
+              :height (to-scale 30)
+              #_#_:on-click #(unselect-card!)}])]]]
+       [:tr
+        [:td {:col-span 2}
+         "To move forward, click a card, then click the target pirate.  To undo card selection, click the selected card."]]
+       [:tr
+        [:td {:col-span 2}
+         "To move backward, click the target pirate."]]]]
+     ]))
+
 (defn main []
   [:center
    [:div
     [:h1 "Cartagena Client>Server"]
     (if (get-in @model/game-state [:server-state :game-on?])
-      [game-area]
+      [:div
+       [game-area]
+       [player-area]]
       [:div
        [name-input]
        [start-a-game]
