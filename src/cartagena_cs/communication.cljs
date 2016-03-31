@@ -63,5 +63,8 @@
                                           :joining-game-token joining-game-token}])))
 
 (defn update-active-player []
-  (println "updating active player")
   (chsk-send! [:cartagena-cs/update-active-player (get-in @model/game-state [:server-state :token])]))
+
+(defn play-card [card from-space]
+  (chsk-send! [:cartagena-cs/play-card {:card card
+                                        :from-space from-space}]))

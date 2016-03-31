@@ -190,7 +190,7 @@
           from-space (get board from-space-index)
           discard-pile (get-in @model/game-state [:server-state :discard-pile])]
       (if-let [selected-card (:selected-card @model/game-state)]
-        (println "playing a card")
+        (communication/play-card selected-card from-space)
         (println "moving back"))))
   #_(when (= color (:color (active-player @app-state)))
       (let [player (active-player @app-state)
