@@ -40,10 +40,6 @@
                     :access-control-allow-methods [:get :put :post :delete]
                     :access-control-allow-credentials ["true"])))
 
-#_(defn broadcast []
-  (doseq [uid (:any @(:connected-uids channel-socket))]
-    ((:send-fn channel-socket) uid [:snakelake/world @model/world])))
-
 (defn broadcast-game-state [players event-and-payload]
   (doseq [player players]
     ((:send-fn channel-socket) (:uid player) event-and-payload)))
@@ -68,6 +64,7 @@
         game-state (get @model/app-state joining-game-token)]
     (when game-state
       (do
+        (log/info "join-game:" uid player-name joining-game-token)
         (model/join-game! uid player-name joining-game-token)
         (let [players (get-in @model/app-state [joining-game-token :players])]
           (broadcast-game-state players [:cartagena-cs/player-joined (get @model/app-state joining-game-token)]))))
@@ -77,6 +74,7 @@
   (let [game-state (get @model/app-state ?data)]
     (when game-state
       (do
+        (log/info "start-game:" ?data)
         (model/start-game! ?data)
         (let [players (get-in @model/app-state [?data :players])]
           (broadcast-game-state players [:cartagena-cs/game-started (get @model/app-state ?data)]))))))
@@ -89,11 +87,13 @@
 (defmethod event :cartagena-cs/update-active-player [{:keys [uid ?data]}]
   (model/update-current-player! uid ?data)
   (let [players (get-in @model/app-state [?data :players])]
-    (broadcast-game-state players [:cartagena-cs/game-updated (get @model/app-state ?data)])))
+    (broadcast-game-state players [:cartagena-cs/player-updated (get @model/app-state ?data)])))
 
 (defmethod event :cartagena-cs/play-card [{:keys [uid ?data]}]
   (let [{:keys [token card from-space]} ?data]
-    (model/play-card! uid token card from-space)))
+    (model/play-card! uid token card from-space)
+    (let [players (get-in @model/app-state [token :players])]
+      (broadcast-game-state players [:cartagena-cs/card-played (get @model/app-state token)]))))
 
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
   (log/info "new connection:" client-id)

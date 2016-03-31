@@ -21,3 +21,11 @@
 
 (defn unselect-card! []
   (swap! game-state dissoc :selected-card))
+
+(defn card-played [game-state server-state]
+  (-> game-state
+      (dissoc :selected-card)
+      (assoc :server-state server-state)))
+
+(defn card-played! [server-state]
+  (swap! game-state card-played server-state))

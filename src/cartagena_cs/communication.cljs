@@ -21,33 +21,6 @@
 (defonce chsk-send! (:send-fn channel-socket))
 (defonce chsk-state (:state channel-socket))
 
-(defmulti event-msg-handler :id)
-
-(defmethod event-msg-handler :default [{:keys [event]}]
-  (println "Unhandled event: %s" event))
-
-(defmethod event-msg-handler :chsk/state [{:keys [?data]}]
-  (if (= ?data {:first-open? true})
-    (println "Channel socket successfully established!")
-    (println "Channel socket state change:" ?data)))
-
-(defmethod event-msg-handler :chsk/recv [{:keys [?data] :as msg}]
-  (when-let [event (first ?data)]
-    (case event
-      :cartagena-cs/new-game-initialized (do
-                                           (model/update-uid! (:uid @(:state msg)))
-                                           (model/update-server-state! (second ?data)))
-      :cartagena-cs/player-joined (do
-                                    (model/update-uid! (:uid @(:state msg)))
-                                    (model/update-server-state! (second ?data)))
-      :cartagena-cs/game-started (model/update-server-state! (second ?data))
-      :cartagena-cs/game-updated (model/update-server-state! (second ?data))
-      ))
-  (println "recv from server:" ?data))
-
-(defonce router
-  (sente/start-client-chsk-router! ch-chsk event-msg-handler))
-
 (defn new-game []
   (chsk-send! [:cartagena-cs/new-game (:player-name @model/game-state)]))
 
@@ -69,3 +42,35 @@
   (chsk-send! [:cartagena-cs/play-card {:token (get-in @model/game-state [:server-state :token])
                                         :card card
                                         :from-space from-space}]))
+
+(defmulti event-msg-handler :id)
+
+(defmethod event-msg-handler :default [{:keys [event]}]
+  (println "Unhandled event: %s" event))
+
+(defmethod event-msg-handler :chsk/state [{:keys [?data]}]
+  (if (= ?data {:first-open? true})
+    (println "Channel socket successfully established!")
+    (println "Channel socket state change:" ?data)))
+
+(defmethod event-msg-handler :chsk/recv [{:keys [?data] :as msg}]
+  (when-let [event (first ?data)]
+    (case event
+      :cartagena-cs/new-game-initialized (do
+                                           (model/update-uid! (:uid @(:state msg)))
+                                           (model/update-server-state! (second ?data)))
+      :cartagena-cs/player-joined (do
+                                    (model/update-uid! (:uid @(:state msg)))
+                                    (model/update-server-state! (second ?data)))
+      :cartagena-cs/game-started (model/update-server-state! (second ?data))
+      :cartagena-cs/player-updated (model/update-server-state! (second ?data))
+      :cartagena-cs/card-played (do
+                                  (model/card-played! (second ?data))
+                                  (update-active-player))
+      ))
+  (println "recv from server:" ?data))
+
+(defonce router
+  (sente/start-client-chsk-router! ch-chsk event-msg-handler))
+
+
