@@ -65,27 +65,15 @@
 (defn start-game! [token]
   (swap! app-state start-game token))
 
-(defn player [game-state uid]
-  (let [players (:players game-state)]
-    (log/debug "players" players)
-    (first (filter #(= uid (:uid %)) players))))
-
-(defn current-player [game-state]
-  (player game-state (:current-player game-state)))
-
 (defn update-current-player [app-state uid token]
   (let [game-state (get app-state token)]
-    (log/debug "game-state" game-state)
     (if (= uid (:current-player game-state))
-      (let [player (current-player game-state)
-            update (game/update-current-player
-                     (:actions-remaining game-state)
-                     player
-                     (:player-order game-state))
-            updated-player (:current-player update)
-            game-state (assoc game-state :current-player (:uid updated-player)
-                                         :actions-remaining (:actions-remaining update))]
-        (log/debug "updated game-state" game-state)
+      (let [{:keys [current-player actions-remaining]} (game/update-current-player
+                                                         (:actions-remaining game-state)
+                                                         uid
+                                                         (:player-order game-state))
+            game-state (assoc game-state :current-player current-player
+                                         :actions-remaining actions-remaining)]
         (assoc app-state token game-state))
       (assoc app-state token game-state))))
 
