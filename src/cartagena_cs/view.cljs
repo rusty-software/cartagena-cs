@@ -187,8 +187,8 @@
   (when (and (my-turn?)
              (clicked-my-pirate? color))
     (let [board (get-in @model/game-state [:server-state :board])
-          from-space (get board from-space-index)
-          discard-pile (get-in @model/game-state [:server-state :discard-pile])]
+          from-space (get board from-space-index)]
+      (println "from-space" from-space)
       (if-let [selected-card (:selected-card @model/game-state)]
         (communication/play-card selected-card from-space)
         (println "moving back"))))

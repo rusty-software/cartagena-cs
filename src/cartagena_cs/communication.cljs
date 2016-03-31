@@ -66,5 +66,6 @@
   (chsk-send! [:cartagena-cs/update-active-player (get-in @model/game-state [:server-state :token])]))
 
 (defn play-card [card from-space]
-  (chsk-send! [:cartagena-cs/play-card {:card card
+  (chsk-send! [:cartagena-cs/play-card {:token (get-in @model/game-state [:server-state :token])
+                                        :card card
                                         :from-space from-space}]))

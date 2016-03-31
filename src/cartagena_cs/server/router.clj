@@ -91,6 +91,10 @@
   (let [players (get-in @model/app-state [?data :players])]
     (broadcast-game-state players [:cartagena-cs/game-updated (get @model/app-state ?data)])))
 
+(defmethod event :cartagena-cs/play-card [{:keys [uid ?data]}]
+  (let [{:keys [token card from-space]} ?data]
+    (model/play-card! uid token card from-space)))
+
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
   (log/info "new connection:" client-id)
   (when uid

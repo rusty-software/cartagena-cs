@@ -99,3 +99,43 @@
        :actions-remaining 3}
       {:current-player current-player
        :actions-remaining actions-remaining})))
+
+(defn remove-pirate-from-space
+  "Returns a space with a single instand of the target pirate removed from the pirates collection."
+  [color space]
+  (let [[pre-pirates post-pirates] (split-with #(not= color %) (:pirates space))]
+    (assoc space :pirates (vec (flatten (concat pre-pirates (rest post-pirates)))))))
+
+(defn is-open-target?
+  "Returns true if the space matches the icon and has fewer than three pirates; otherwise false."
+  [space icon]
+  (and (= icon (:icon space))
+       (< (count (:pirates space)) 3)))
+
+(defn open-space-index
+  "Returns the index of the first open space for the given icon after the starting index."
+  [starting-index board icon]
+  (or
+    (some #(let [space (get board %)]
+            (when (is-open-target? space icon) %))
+          (range (inc starting-index) (count board)))
+    (dec (count board))))
+
+(defn add-pirate-to-space
+  "Returns a space with the target pirate added to the pirates collection."
+  [color space]
+  (update-in space [:pirates] conj color))
+
+(defn play-card
+  "Discards the card and moves a single pirate from the source space to the next available icon space.  Returns the updated player, board, and discard pile."
+  [player icon from-space board discard-pile]
+  (let [[pre-cards post-cards] (split-with #(not= icon %) (:cards player))
+        updated-from-space (remove-pirate-from-space (:color player) from-space)
+        space-index (.indexOf board from-space)
+        next-open-space-index (open-space-index space-index board icon)
+        next-open-space (get board next-open-space-index)
+        updated-target-space (add-pirate-to-space (:color player) next-open-space)]
+    {:player (assoc player :cards (concat pre-cards (rest post-cards)))
+     :board (assoc board space-index updated-from-space
+                                next-open-space-index updated-target-space)
+     :discard-pile (conj discard-pile icon)}))

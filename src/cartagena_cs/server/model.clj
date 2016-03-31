@@ -79,3 +79,17 @@
 
 (defn update-current-player! [uid token]
   (swap! app-state update-current-player uid token))
+
+(defn play-card [app-state uid token card from-space]
+  (log/debug "play-card!" card from-space)
+  (let [game-state (get app-state token)]
+    (if (= uid (:current-player game-state))
+      (let [{:keys [player board discard-pile]} (game/play-card uid card from-space (:board game-state) (:discard-pile game-state))
+            game-state (assoc game-state :players [] #_(conj (remove #{(active-player state)} (:players state)) (:player response))
+                                         :board board
+                                         :discard-pile discard-pile)]
+        (assoc app-state token game-state))
+      app-state)))
+
+(defn play-card! [uid token card from-space]
+  (swap! app-state play-card uid token card from-space))
