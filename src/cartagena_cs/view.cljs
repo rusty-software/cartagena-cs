@@ -170,18 +170,18 @@
    {:dangerouslySetInnerHTML
     {:__html (str "<image xlink:href=\"" (icon constants/icon-images) "\" x=\"" (to-scale x) "\" y=\"" (to-scale y) "\" width=\"" (to-scale 30) "\" height=\"" (to-scale 30) "\" />")}}])
 
-(defn player [name]
+(defn player [uid]
   (let [players (get-in @model/game-state [:server-state :players])]
-    (first (filter #(= name (:name %)) players))))
+    (first (filter #(= uid (:uid %)) players))))
 
 (defn current-player []
   (player (get-in @model/game-state [:server-state :current-player])))
 
 (defn my-turn? []
-  (= (:player-name @model/game-state) (:name (current-player))))
+  (= (:uid @model/game-state) (:uid (current-player))))
 
 (defn clicked-my-pirate? [color]
-  (= color (:color (player (:player-name @model/game-state)))))
+  (= color (:color (player (:uid @model/game-state)))))
 
 (defn pirate-click [color from-space-index]
   (when (and (my-turn?)
@@ -276,7 +276,7 @@
    ])
 
 (defn player-area []
-  (let [{:keys [cards color] player-name :name} (player (:player-name @model/game-state))
+  (let [{:keys [cards color] player-name :name} (player (:uid @model/game-state))
         card-groups (frequencies cards)]
     [:div
      {:style {:display "inline-block"
@@ -296,7 +296,7 @@
            [:button
             {:class "button brown"
              :style {:margin "0 0 0 20px"}
-             #_#_:on-click #(update-active-player! @app-state)} "Pass"]]]])
+             :on-click #(communication/update-active-player)} "Pass"]]]])
       [:tbody
        [:tr
         [:td {:class "bold"} "Name"]

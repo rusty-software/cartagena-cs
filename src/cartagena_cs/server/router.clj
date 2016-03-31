@@ -86,6 +86,11 @@
   (model/end-game! token)
   (log/debug "current app-state:" @model/app-state))
 
+(defmethod event :cartagena-cs/update-active-player [{:keys [uid ?data]}]
+  (model/update-current-player! uid ?data)
+  (let [players (get-in @model/app-state [?data :players])]
+    (broadcast-game-state players [:cartagena-cs/game-updated (get @model/app-state ?data)])))
+
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
   (log/info "new connection:" client-id)
   (when uid

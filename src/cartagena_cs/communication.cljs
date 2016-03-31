@@ -31,12 +31,17 @@
     (println "Channel socket successfully established!")
     (println "Channel socket state change:" ?data)))
 
-(defmethod event-msg-handler :chsk/recv [{:keys [?data]}]
+(defmethod event-msg-handler :chsk/recv [{:keys [?data] :as msg}]
   (when-let [event (first ?data)]
     (case event
-      :cartagena-cs/new-game-initialized (model/update-server-state! (second ?data))
-      :cartagena-cs/player-joined (model/update-server-state! (second ?data))
+      :cartagena-cs/new-game-initialized (do
+                                           (model/update-uid! (:uid @(:state msg)))
+                                           (model/update-server-state! (second ?data)))
+      :cartagena-cs/player-joined (do
+                                    (model/update-uid! (:uid @(:state msg)))
+                                    (model/update-server-state! (second ?data)))
       :cartagena-cs/game-started (model/update-server-state! (second ?data))
+      :cartagena-cs/game-updated (model/update-server-state! (second ?data))
       ))
   (println "recv from server:" ?data))
 
@@ -57,3 +62,6 @@
     (chsk-send! [:cartagena-cs/join-game {:player-name player-name
                                           :joining-game-token joining-game-token}])))
 
+(defn update-active-player []
+  (println "updating active player")
+  (chsk-send! [:cartagena-cs/update-active-player (get-in @model/game-state [:server-state :token])]))

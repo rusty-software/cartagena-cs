@@ -76,10 +76,26 @@
         board (assoc board 0 {:index 0 :icon :jail :pirates pirates-in-jail})]
     {:board board
      :players init-players
-     :player-order (vec (map :name init-players))
-     :current-player (:name (first init-players))
+     :player-order (vec (map :uid init-players))
+     :current-player (:uid (first init-players))
      :actions-remaining 3
      :draw-pile draw-pile
      :discard-pile []}))
 
+(defn next-player
+  "Returns the player string whose turn is... well, next."
+  [current-player player-order]
+  (let [current-player-index (.indexOf player-order current-player)]
+    (if (= current-player-index (dec (count player-order)))
+      (get player-order 0)
+      (get player-order (inc current-player-index)))))
 
+(defn update-current-player
+  "Decrements the moves remaining until the value reaches 0. Rotates the current player and resets the moves count at that point.  Returns the current player string and actions remaining count."
+  [actions-remaining current-player player-order]
+  (let [actions-remaining (dec actions-remaining)]
+    (if (zero? actions-remaining)
+      {:current-player (next-player current-player player-order)
+       :actions-remaining 3}
+      {:current-player current-player
+       :actions-remaining actions-remaining})))

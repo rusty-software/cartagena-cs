@@ -1,5 +1,6 @@
 (ns cartagena-cs.server.model
-  (:require [cartagena-cs.server.game :as game]))
+  (:require [cartagena-cs.server.game :as game]
+            [taoensso.timbre :as log]))
 
 (defonce app-state
   (atom {}))
@@ -63,3 +64,29 @@
 
 (defn start-game! [token]
   (swap! app-state start-game token))
+
+(defn player [game-state uid]
+  (let [players (:players game-state)]
+    (log/debug "players" players)
+    (first (filter #(= uid (:uid %)) players))))
+
+(defn current-player [game-state]
+  (player game-state (:current-player game-state)))
+
+(defn update-current-player [app-state uid token]
+  (let [game-state (get app-state token)]
+    (log/debug "game-state" game-state)
+    (if (= uid (:current-player game-state))
+      (let [player (current-player game-state)
+            update (game/update-current-player
+                     (:actions-remaining game-state)
+                     player
+                     (:player-order game-state))
+            updated-player (:current-player update)
+            game-state (assoc game-state :current-player (:uid updated-player)
+                                         :actions-remaining (:actions-remaining update))]
+        (assoc app-state token game-state))
+      (assoc app-state token game-state))))
+
+(defn update-current-player! [uid token]
+  (swap! app-state update-current-player uid token))
