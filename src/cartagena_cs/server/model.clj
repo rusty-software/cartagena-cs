@@ -85,6 +85,7 @@
             updated-player (:current-player update)
             game-state (assoc game-state :current-player (:uid updated-player)
                                          :actions-remaining (:actions-remaining update))]
+        (log/debug "updated game-state" game-state)
         (assoc app-state token game-state))
       (assoc app-state token game-state))))
 
