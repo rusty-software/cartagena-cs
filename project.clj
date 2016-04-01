@@ -1,6 +1,6 @@
 (defproject cartagena-cs "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
+  :description "Multiplayer reproduction of the Cartagena board game"
+  :url "http://github.com/rusty-software/cartagena-cs"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
