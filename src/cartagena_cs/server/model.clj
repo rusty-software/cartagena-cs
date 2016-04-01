@@ -103,3 +103,22 @@
 (defn play-card! [uid token card from-space]
   (swap! app-state play-card uid token card from-space))
 
+(defn move-back [app-state uid token from-space]
+  (let [game-state (get app-state token)]
+    (if (= uid (:current-player game-state))
+      (let [current-player (player-by-uid game-state uid)
+            {:keys [player board draw-pile discard-pile]} (game/move-back
+                                                            current-player
+                                                            from-space
+                                                            (:board game-state)
+                                                            (:draw-pile game-state)
+                                                            (:discard-pile game-state))
+            game-state (assoc game-state :players (conj (remove #(= uid (:uid %)) (:players game-state)) player)
+                                         :board board
+                                         :draw-pile draw-pile
+                                         :discard-pile discard-pile)]
+        (assoc app-state token game-state))
+      app-state)))
+
+(defn move-back! [uid token from-space]
+  (swap! app-state move-back uid token from-space))

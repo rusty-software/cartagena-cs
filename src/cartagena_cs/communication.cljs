@@ -43,6 +43,10 @@
                                         :card card
                                         :from-space from-space}]))
 
+(defn move-back [from-space]
+  (chsk-send! [:cartagena-cs/move-back {:token (get-in @model/game-state [:server-state :token])
+                                        :from-space from-space}]))
+
 (defmulti event-msg-handler :id)
 
 (defmethod event-msg-handler :default [{:keys [event]}]
@@ -66,6 +70,9 @@
       :cartagena-cs/player-updated (model/update-server-state! (second ?data))
       :cartagena-cs/card-played (do
                                   (model/card-played! (second ?data))
+                                  (update-active-player))
+      :cartagena-cs/moved-back (do
+                                  (model/moved-back! (second ?data))
                                   (update-active-player))
       ))
   (println "recv from server:" ?data))

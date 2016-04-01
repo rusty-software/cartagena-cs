@@ -95,6 +95,12 @@
     (let [players (get-in @model/app-state [token :players])]
       (broadcast-game-state players [:cartagena-cs/card-played (get @model/app-state token)]))))
 
+(defmethod event :cartagena-cs/move-back [{:keys [uid ?data]}]
+  (let [{:keys [token from-space]} ?data]
+    (model/move-back! uid token from-space)
+    (let [players (get-in @model/app-state [token :players])]
+      (broadcast-game-state players [:cartagena-cs/moved-back (get @model/app-state token)]))))
+
 (defmethod event :chsk/uidport-open [{:keys [uid client-id]}]
   (log/info "new connection:" client-id)
   (when uid

@@ -190,15 +190,7 @@
           from-space (get board from-space-index)]
       (if-let [selected-card (:selected-card @model/game-state)]
         (communication/play-card selected-card from-space)
-        (println "moving back"))))
-  #_(when (= color (:color (active-player @app-state)))
-      (let [player (active-player @app-state)
-            board (:board @app-state)
-            from-space (get board from-space-index)
-            discard-pile (:discard-pile @app-state)]
-        (if-let [selected-card (:selected-card @app-state)]
-          (play-card! player selected-card from-space board discard-pile)
-          (move-back! player from-space board (:draw-pile @app-state) discard-pile)))))
+        (communication/move-back from-space)))))
 
 (defn circles-for [space-index x y colors]
   (for [color-index (range (count colors))

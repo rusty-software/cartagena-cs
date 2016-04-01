@@ -29,3 +29,6 @@
 
 (defn card-played! [server-state]
   (swap! game-state card-played server-state))
+
+(defn moved-back! [server-state]
+  (swap! game-state assoc :server-state server-state))

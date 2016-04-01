@@ -139,3 +139,27 @@
      :board (assoc board space-index updated-from-space
                                 next-open-space-index updated-target-space)
      :discard-pile (conj discard-pile icon)}))
+
+(defn occupiable-space-index
+  "Returns the index of the first space with either one or two pirates before the starting index."
+  [starting-index board]
+  (some #(let [space (get board %)
+               pirate-count (count (:pirates space))]
+          (when (or (= 1 pirate-count) (= 2 pirate-count)) %))
+        (range (dec starting-index) 0 -1)))
+
+(defn move-back
+  "Moves a single pirate back to the first occupiable space.  Returns the updated player, board, draw, and discard piles."
+  [player from-space board draw-pile discard-pile]
+  (when-let [prev-occupiable-space-index (occupiable-space-index (.indexOf board from-space) board)]
+    (let [from-space-index (.indexOf board from-space)
+          target-space (get board prev-occupiable-space-index)
+          draw-count (count (:pirates target-space))
+          {:keys [player draw-pile discard-pile]} (draw-cards draw-count player draw-pile discard-pile)
+          updated-from-space (remove-pirate-from-space (:color player) from-space)
+          updated-target-space (add-pirate-to-space (:color player) target-space)]
+      {:player player
+       :board (assoc board from-space-index updated-from-space
+                           prev-occupiable-space-index updated-target-space)
+       :draw-pile draw-pile
+       :discard-pile discard-pile})))
