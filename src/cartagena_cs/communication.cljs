@@ -69,11 +69,14 @@
       :cartagena-cs/game-started (model/update-server-state! (second ?data))
       :cartagena-cs/player-updated (model/update-server-state! (second ?data))
       :cartagena-cs/card-played (do
+                                  (println "card-played")
                                   (model/card-played! (second ?data))
-                                  (update-active-player))
+                                  (when (model/game-over?)
+                                    (model/end-game!)))
       :cartagena-cs/moved-back (do
-                                  (model/moved-back! (second ?data))
-                                  (update-active-player))
+                                 (println "moved-back")
+                                 (model/moved-back! (second ?data))
+                                 #_(update-active-player))
       ))
   (println "recv from server:" ?data))
 

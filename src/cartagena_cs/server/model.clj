@@ -74,6 +74,7 @@
                                                          (:player-order game-state))
             game-state (assoc game-state :current-player current-player
                                          :actions-remaining actions-remaining)]
+        (log/debug "update-current-player:" current-player actions-remaining)
         (assoc app-state token game-state))
       (assoc app-state token game-state))))
 
@@ -101,7 +102,8 @@
       app-state)))
 
 (defn play-card! [uid token card from-space]
-  (swap! app-state play-card uid token card from-space))
+  (swap! app-state play-card uid token card from-space)
+  (update-current-player! uid token))
 
 (defn move-back [app-state uid token from-space]
   (let [game-state (get app-state token)]
@@ -121,4 +123,5 @@
       app-state)))
 
 (defn move-back! [uid token from-space]
-  (swap! app-state move-back uid token from-space))
+  (swap! app-state move-back uid token from-space)
+  (update-current-player! uid token))

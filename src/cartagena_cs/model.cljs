@@ -28,7 +28,18 @@
       (assoc :server-state server-state)))
 
 (defn card-played! [server-state]
+  (println "card-played! server-state:" server-state)
   (swap! game-state card-played server-state))
 
 (defn moved-back! [server-state]
+  (println "moved-back! server-state:" server-state)
   (swap! game-state assoc :server-state server-state))
+
+(defn game-over? []
+  (let [board (get-in @game-state [:server-state :board])
+        ship (first (filter #(= :ship (:icon %)) board))
+        pirate-counts-by-color (frequencies (:pirates ship))]
+    (some #(>= (second %) 6) pirate-counts-by-color)))
+
+(defn end-game! []
+  (swap! game-state :game-over true))

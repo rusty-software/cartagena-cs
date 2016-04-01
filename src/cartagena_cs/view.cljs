@@ -336,10 +336,15 @@
   [:center
    [:div
     [:h1 "Cartagena Client>Server"]
+
     (if (get-in @model/game-state [:server-state :game-on?])
       [:div
        [game-area]
-       [player-area]]
+       (if (:game-over? @model/game-state)
+         [:div
+          [:h2 "WE HAVE A WINNER!"]
+          [:h3 (str "Congratulations, " (:name (current-player)) "!")]]
+         [player-area])]
       [:div
        [name-input]
        [start-a-game]
