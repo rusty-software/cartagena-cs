@@ -151,7 +151,7 @@
 (defn move-back
   "Moves a single pirate back to the first occupiable space.  Returns the updated player, board, draw, and discard piles."
   [player from-space board draw-pile discard-pile]
-  (when-let [prev-occupiable-space-index (occupiable-space-index (.indexOf board from-space) board)]
+  (if-let [prev-occupiable-space-index (occupiable-space-index (.indexOf board from-space) board)]
     (let [from-space-index (.indexOf board from-space)
           target-space (get board prev-occupiable-space-index)
           draw-count (count (:pirates target-space))
@@ -162,4 +162,8 @@
        :board (assoc board from-space-index updated-from-space
                            prev-occupiable-space-index updated-target-space)
        :draw-pile draw-pile
-       :discard-pile discard-pile})))
+       :discard-pile discard-pile})
+    {:player player
+     :board board
+     :draw-pile draw-pile
+     :discard-pile discard-pile}))
