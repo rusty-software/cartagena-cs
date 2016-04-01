@@ -1,0 +1,161 @@
+/**
+ * Body
+ * ----------------------------------------------------------------------------
+ */
+body {
+	color: #141412;
+	font-family: "IM Fell English SC", Helvetica, sans-serif;
+	line-height: 1.5;
+	text-rendering: optimizeLegibility;
+	vertical-align: baseline;
+	background-image: url("/img/cartagena_bg_01.jpg");
+	background-size: cover;
+}
+
+/**
+ * Headings
+ * ----------------------------------------------------------------------------
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	clear: both;
+	line-height: 1.3;
+}
+
+h1 {
+	font-size: 48px;
+	margin: 33px 0;
+}
+
+h2 {
+	font-size: 30px;
+	margin: 25px 0;
+}
+
+h3 {
+	font-size: 22px;
+	margin: 22px 0;
+}
+
+h4 {
+	font-size: 20px;
+	margin: 25px 0;
+}
+
+h5 {
+	font-size: 18px;
+	margin: 30px 0;
+}
+
+h6 {
+	font-size: 16px;
+	margin: 36px 0;
+}
+
+/**
+ * Tables
+ * ----------------------------------------------------------------------------
+ */
+table {
+    background: rgba(255, 255, 255, 0.3);
+	border: 1px solid #ededed;
+	border-collapse: collapse;
+	border-spacing: 0;
+	font-size: 16px;
+	line-height: 2;
+	margin: 0 0 20px;
+	width: 100%;
+}
+
+caption,
+th,
+td {
+	font-weight: normal;
+	text-align: left;
+}
+
+caption {
+	font-size: 16px;
+	margin: 20px 0;
+}
+
+th {
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: 6px 10px 6px 10px;
+    word-wrap: break-word;
+}
+
+td {
+	padding: 6px 10px 6px 10px;
+    word-wrap: break-word;
+}
+
+td.bold {
+    font-weight: bold;
+}
+
+/**
+ * Buttons
+ * ----------------------------------------------------------------------------
+ */
+.button.yellow, .button.brown {
+	font-family: "IM Fell English SC", Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: .875em;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    line-height: 1;
+    position: relative;
+    display: inline-block;
+    min-width: 86px;
+    margin: 2px 2px 2px 2px;
+    padding: 8px 8px 8px 8px;
+    border: 0;
+    outline: none;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    -moz-transform: scale(1) rotate(0);
+    -ms-transform: scale(1) rotate(0);
+    -webkit-transform: scale(1) rotate(0);
+    transform: scale(1) rotate(0);
+    cursor: auto;
+}
+
+.button.brown {
+    color: #F6EED9;
+    background-color: #463325;
+}
+
+.button.yellow {
+    color: #463325;
+    background-color: #EFB44F;
+}
+
+/**
+ * Miscellany
+ * ----------------------------------------------------------------------------
+ */
+ .leading {
+	font-size: 20px;
+	font-weight: bold;
+	margin: 25px 0;
+}
+
+figure {
+    display: block;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 20px;
+    margin-right: 20px;
+
+}
