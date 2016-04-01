@@ -42,4 +42,4 @@
     (some #(>= (second %) 6) pirate-counts-by-color)))
 
 (defn end-game! []
-  (swap! game-state :game-over true))
+  (swap! game-state assoc :game-over true))
