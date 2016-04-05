@@ -340,8 +340,11 @@
     (if (get-in @model/game-state [:server-state :game-on?])
       [:div
        [game-area]
-       (if (:game-over? @model/game-state)
+       (if (:game-over @model/game-state)
          [:div
+          {:style {:display "inline-block"
+                   :vertical-align "top"
+                   :margin "5px 5px 5px 5px"}}
           [:h2 "WE HAVE A WINNER!"]
           [:h3 (str "Congratulations, " (:name (current-player)) "!")]]
          [player-area])]
